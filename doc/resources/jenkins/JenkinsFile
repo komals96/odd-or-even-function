@@ -4,8 +4,10 @@ node {
     }
 
     stage('Build') {
-        sh 'mvn -version'
-        sh 'mvn clean package'
+        //sh 'mvn -version'
+        //sh 'mvn clean package'
+        echo 'Building..'
+            sh 'mvn clean compile vertx:package fabric8:build fabric8:resource -pl bundle-registry-service -Popenshift'
     }
 
     stage('Publish') {
