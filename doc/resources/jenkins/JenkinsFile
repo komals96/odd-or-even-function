@@ -1,26 +1,30 @@
 pipeline {
      agent any
-
-    stage('Init') {
-        checkout scm
-    }
-
-    stage('Build') {
-        tools{
+   tools
+   {
         maven 'Maven 3.6.3'
         jdk 'JDK 9.0.4'
     }
-    steps {
-        sh 'mvn -version'           
-        sh 'mvn clean package'
-        }
-    }
+    stages
+    {
+          stage('Init') 
+          {
+                checkout scm
+          }
 
-    stage('Publish') {
-        azureFunctionAppPublish appName: env.FUNCTION_NAME, 
+         stage('Build') 
+         {
+            steps {
+            sh 'mvn -version'           
+            sh 'mvn clean package'
+            }
+         }
+        stage('Publish') {
+                               azureFunctionAppPublish appName: env.FUNCTION_NAME, 
                                 azureCredentialsId: env.AZURE_CRED_ID, 
                                 filePath: '**/*.json,**/*.jar,bin/*,HttpTrigger-Java/*', 
                                 resourceGroup: env.RES_GROUP, 
                                 sourceDirectory: 'target/azure-functions/odd-or-even-function-sample'
+       }
     }
 }
